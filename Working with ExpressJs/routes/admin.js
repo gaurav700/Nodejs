@@ -1,5 +1,5 @@
 const express = require('express');
-const { getAddProduct, postAddProduct } = require('../controller/products');
+const { getAddProduct, postAddProduct } = require('../controller/admin');
 const router = express.Router();
 
 // /admin/add-product => GET
