@@ -23,12 +23,14 @@ exports.postAddProduct = (req, res, next) => {
 
 exports.getHomePage = (req, res, next) => {
     // res.sendFile(path.join(rootDir, 'views', 'shop.html'))
-    const products = Product.fetchAll();
-    res.render('shop', {
-        prods: products,
-        pageTitle: 'Shop', 
-        path: '/', 
-        hasProd : products.length > 0, 
-        activeShop : true, 
-        productCss : true});
+    Product.fetchAll(products => {
+        res.render('shop', {
+            prods: products,
+            pageTitle: 'Shop', 
+            path: '/', 
+            hasProd : products.length > 0, 
+            activeShop : true, 
+            productCss : true
+        });
+    });
 };
