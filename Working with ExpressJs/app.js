@@ -16,7 +16,7 @@ app.use(shopRoutes);
 
 
 app.use((req, res, next)=>{
-    res.sendFile(path.join(rootDir , 'views', '404.html'));
+    res.render('404');
 })
 
 
