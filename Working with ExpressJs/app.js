@@ -8,7 +8,7 @@ const expressHbs = require('express-handlebars');
 const rootDir = require('./util/path');
 
 // for enabling hbs
-app.engine('hbs', expressHbs());
+app.engine('hbs', expressHbs({layoutsDir: 'views/layouts/', defaultLayout: 'main-layout', extname: 'hbs'}));
 app.set('view engine', 'hbs');
 
 // for enabling pug
