@@ -30,3 +30,19 @@ exports.getProducts = (req,res, next)=>{
     });
   });
 }
+
+
+exports.editProduct = (req, res, next) =>{
+  const prodId = req.params.id;
+  console.log("prod id "+prodId);
+  Product.findById(prodId, product => {
+    res.render('admin/edit-product', {
+      pageTitle: product.title,
+      path: '/admin/edit-product',
+      formsCSS: true,
+      productCSS: true,
+      activeAddProduct: true,
+      prod: product,
+    });
+  })
+}
