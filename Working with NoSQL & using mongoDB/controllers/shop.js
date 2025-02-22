@@ -42,15 +42,37 @@ exports.getIndex = (req, res, next) => {
 };
 
 exports.getCart = (req, res, next) => {
+  req.user.getCart()
+  .then(products => {
+    res.render('shop/cart', {
+      path: '/cart',
+      pageTitle: 'Your Cart',
+      products: products
+    });
+  })
+  .catch(err => console.log(err))
 
 };
 
 exports.postCart = (req, res, next) => {
-
+  const prodId = req.body.productId;
+  Product.findById(prodId)
+  .then(product => {
+    req.user.addToCart(product);
+    res.redirect('/cart');
+  })
+  .then(result => {
+    console.log(result);
+  });
 };
 
 exports.postCartDeleteProduct = (req, res, next) => {
-
+  const prodId = req.body.productId;
+  req.user.deleteItemFromCart(prodId)
+  .then(result => {
+    res.redirect('/cart');
+  })
+  .catch(err => console.log(err))
 };
 
 exports.getOrders = (req, res, next) => {
