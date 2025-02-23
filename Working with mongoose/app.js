@@ -23,7 +23,14 @@ app.set('views', 'views');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-
+app.use((req,res,next)=>{
+    User.findById('67bb9cefdddfba01605f4697')
+    .then(user =>{
+        req.user = user;
+        next();
+    })
+    .catch(err => console.log(err));
+})
 
 
 app.use('/admin', adminRoutes);
@@ -33,6 +40,20 @@ app.use(errorController.get404);
 const uri = `mongodb+srv://${mongoUser}:${mongoPassword}@project0.35tzr.mongodb.net/?retryWrites=true&w=majority&appName=${mongoDbName}`;
 mongoose
     .connect(uri)
-    .then(res => app.listen(3000))
+    .then(res => {
+        User.findOne().then(user =>{
+            if(!user){
+                const user = new User({
+                    name : "Gaurav", 
+                    email : "Gaurav@njit.edu", 
+                    cart : {
+                        items : []
+                    }
+                });
+                user.save();
+            }
+        })
+        app.listen(3000)
+    })
     .catch(err=> console.log(err));
 
