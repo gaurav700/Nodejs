@@ -1,5 +1,4 @@
 const Product = require('../models/product');
-const Cart = require('../models/cart');
 
 exports.getProducts = (req, res, next) => {
   Product.find()
@@ -41,28 +40,30 @@ exports.getIndex = (req, res, next) => {
   });
 };
 
-exports.getCart = (req, res, next) => {
-  req.user.getCart()
-  .then(products => {
+exports.getCart = async (req, res, next) => {
+  try {
+    await req.user.populate('cart.items.productId');
     res.render('shop/cart', {
       path: '/cart',
       pageTitle: 'Your Cart',
-      products: products
+      products: req.user.cart.items
     });
-  })
-  .catch(err => console.log(err))
-
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
 };
+
 
 exports.postCart = (req, res, next) => {
   const prodId = req.body.productId;
   Product.findById(prodId)
   .then(product => {
-    req.user.addToCart(product);
-    res.redirect('/cart');
+    return req.user.addToCart(product);
   })
   .then(result => {
     console.log(result);
+    res.redirect('/cart');
   });
 };
 
