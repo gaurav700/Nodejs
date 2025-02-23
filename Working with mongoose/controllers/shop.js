@@ -1,4 +1,5 @@
 const Product = require('../models/product');
+const Order = require('../models/order');
 
 exports.getProducts = (req, res, next) => {
   Product.find()
@@ -90,18 +91,38 @@ exports.getCheckout = (req, res, next) => {
   });
 };
 
-exports.postOrder = (req,res, next) =>{
-  req.user.addOrder()
-  .then(result => {
+exports.postOrder = async (req, res, next) => {
+  try {
+    await req.user.populate('cart.items.productId');  // Fixed async issue
+
+    const products = req.user.cart.items.map(i => {
+      return {
+        quantity: i.quantity,
+        product: { ...i.productId._doc }
+      };
+    });
+
+    const order = new Order({
+      user: {
+        name: req.user.name,
+        userId: req.user
+      },
+      products: products
+    });
+
+    await order.save(); 
+    req.user.clearCart();
     res.redirect('/orders');
-  })
-  .catch(err => console.log(err));
-}
+  } catch (err) {
+    console.error(err);
+    next(err);  
+  }
+};
+
 
 exports.getOrders = (req, res, next) => {
-  req.user
-    .getOrders()
-    .then(orders => {
+  Order.find({'user.userId': req.user._id})
+  .then(orders => {
       res.render('shop/orders', {
         path: '/orders',
         pageTitle: 'Your Orders',

@@ -57,33 +57,9 @@ UserSchema.methods.deleteItemFromCart = function(prodId){
     return this.save();
 }
 
-UserSchema.methods.addOrder = function(){
-    return this.getCart()
-    .then(products => {
-        const order = {
-            items: products,
-            user: {
-                _id: new mongodb.ObjectId(this._id),
-                name: this.name
-            }
-        };
-        return this
-        .insertOne(order);
-        })
-    .then(result => {
-        this.cart = { items: [] };
-        return this
-        .updateOne({_id: new mongodb.ObjectId(this._id)}, {$set: {cart: {items: []}}});
-    })
-    .catch(err => {
-        console.log(err); 
-    });
-}
-
-UserSchema.methods.getOrders = function(){
-    return this
-    .find({'user._id': new mongodb.ObjectId(this._id)})
-    .toArray();
+UserSchema.methods.clearCart = function(){
+    this.cart = {items : []};
+    return this.save();
 }
 
 
