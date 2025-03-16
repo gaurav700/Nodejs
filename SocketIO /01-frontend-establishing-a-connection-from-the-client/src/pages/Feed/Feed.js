@@ -204,7 +204,6 @@ class Feed extends Component {
         };
         this.setState(prevState => {
           return {
-            posts: updatedPosts,
             isEditing: false,
             editPost: null,
             editLoading: false
