@@ -4,13 +4,15 @@ This document outlines the GraphQL mutations and queries used for user and post 
 ## use token for crud operations on posts (pass as headers as "Authorization" : "Bearer <token>"
 ## User Management
 ### Login
-```{
+```
+{
     login(email : "gaurav@njit.edu", password: "gaurav")
     {
         userId
         token
     }
-}```
+}
+```
 
 
 
